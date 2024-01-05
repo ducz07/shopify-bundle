@@ -1,0 +1,94 @@
+<div class="page-width creators">
+  {% for bundle in shop.metaobjects.bundles.values %}
+    <div class="creator">
+      <div class="creator-image"></div>
+      <h2 class="creator-title"></h2>
+      <p class="creator-paragraph"></p>
+      <h3>{{ bundle.bundle_name }}</h3>
+      <div class="creator-products">
+        {% for product in bundle.bundle_products.value %}
+          {% assign product_img = product.featured_image | img_tag %}
+          <div class="creator-product">
+            <img src="{{ product.featured_image | product_img_url: 'medium' }}">
+            {{ product.title }}
+            <div class="button-container">
+              <button class="add-button" onclick="addProduct('{{ product.title }}', '{{ product.id }}', '{{ product.featured_image | product_img_url: 'medium' }}')">Add</button>
+            </div>
+          </div>
+          {%- assign product_form_installment_id = 'product-form-installment-' | append: section.id -%}
+          {%- form 'product', product, data-productid: product.id, id: product_form_installment_id, class: 'installment caption-large' -%}
+            <input
+              type="hidden"
+              name="id"
+              data-productid="{{ product.id }}"
+              value="{{ product.selected_or_first_available_variant.id }}">
+            {{ form | payment_terms }}
+          {%- endform -%}
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+  <div class="bundled-products"></div>
+</div>
+
+<style>
+  .creators {
+    margin-top: 5rem;
+    margin-bottom: 5rem;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10rem;
+  }
+  {% comment %}
+    .creator {
+      text-align: center;
+      box-shadow: rgba(0, 0, 0, 0.23) 0 2px 5px 5px;
+      padding: 20px;
+    }
+  {% endcomment %}
+  .creator-products {
+    display: flex;
+    column-gap: 15px;
+    justify-content: center;
+  }
+  .creator-product {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    text-decoration: none;
+    color: rgb(var(--color-foreground));
+    text-align: center;
+    box-shadow: rgba(0, 0, 0, 0.23) 0 2px 5px 5px;
+    padding: 20px;
+  }
+
+  .bundled-products {
+    display: flex;
+  }
+
+  .bundled-products div {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    text-decoration: none;
+    color: rgb(var(--color-foreground));
+    text-align: center;
+    box-shadow: rgba(0, 0, 0, 0.23) 0 2px 5px 5px;
+    padding: 20px;
+    margin-right: 5rem;
+  }
+
+  .add-button {
+    cursor: pointer;
+  }
+</style>
+
+{{ 'bundle.js' | asset_url | script_tag }}
+
+{% schema %}
+  {
+    "name": "Creators",
+    "settings": []
+  }
+{% endschema %}

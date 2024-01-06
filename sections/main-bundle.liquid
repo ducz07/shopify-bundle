@@ -1,0 +1,53 @@
+{{ 'component-main-bundle.css' | asset_url | stylesheet_tag }}
+<section id="main-bundle">
+        <header>
+            <h2>{{ section.settings.heading }}</h2>
+            <p>{{ section.settings.subheading }}</p>
+        </header>
+</section>
+{% schema %}
+  {
+    "name": "Main Bundle",
+    "settings": [
+        {
+            "type" : "header",
+            "content": "Heading Settings"
+        },
+        {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "BUY ANY 4 AND SAVE 10%"
+        },
+        {
+            "type": "text",
+            "id": "subheading",
+            "label": "Sub Heading",
+            "default": "Buy ANY 4 of these products and receive a 10% discount!"
+        },
+        {
+            "type": "header",
+            "content": "Footer Settings"
+        },
+        {
+            "type": "text",
+            "id": "footertext",
+            "label": "Footer Text",
+            "default": "Your bundle needs 4 more item(s)"
+        }
+    ],
+    "blocks": [
+        {
+            "type": "bundle",
+            "name": "Bundle",
+            "settings": [
+                {
+                    "type": "product",
+                    "id": "bundleitem",
+                    "label": "Bundle Item"
+                }
+            ]
+        }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,176 @@
+{{ 'component-main-bundle.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'component-main-bundle.js' | asset_url }}" defer="defer"></script>
+{% style %}
+#main-bundle .bundile-items-container .item select {
+    appearance: none;
+    background-image: url("{{ 'arrow-down.svg' | asset_url }}");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+}
+{% endstyle %}
+{% liquid 
+    assign current_currency = 000 | money
+    assign current_currency = current_currency | remove: "0.00"
+%}
+<section id="main-bundle" data-quantity-limit="{{ section.settings.quantity_limit }}" data-current-currency="{{ current_currency }}">
+        <header>
+            <span class="heading">{{ section.settings.heading }}</span>
+            <span class="sub-heading">{{ section.settings.subheading }}</span>
+        </header>
+        <div class="bundile-items-container">
+            {% for block in section.blocks %}
+                {% if block.type == "bundle" %}
+                    <div class="item">
+                        <form name="bundle-item-form-{{ block.settings.bundleitem.id }}" class="bundle-item-form">
+                            <input type="hidden" name="item_image" value="{{ block.settings.bundleitem.featured_image | image_url: width: 318 }}">
+                            {{ block.settings.bundleitem.featured_image | image_url: width: 318 | image_tag:
+                                width: 318,
+                                height: 318,
+                                alt: block.settings.bundleitem.alt,
+                                loading: "eager",
+                                title: block.settings.bundleitem.title                                
+                            }}  
+                            <input type="hidden" name="item_url" value="{{ block.settings.bundleitem.url }}" />
+                            <a href="{{ block.settings.bundleitem.url }}" class="title" title="{{ block.settings.bundleitem.title }}">{{ block.settings.bundleitem.title }}</a>
+                            <input type="hidden" name="item_title" value="{{ block.settings.bundleitem.title }}" />
+                            <span class="price">
+                                {% liquid 
+                                    assign discount_percentage = section.settings.discount_percentage | times: 0.01
+                                    assign bundleitem_price = block.settings.bundleitem.price
+                                    assign discount_amount = bundleitem_price | times: discount_percentage
+                                    assign discount_price = bundleitem_price | minus: discount_amount
+                                %}
+                                <input type="hidden" name="item_compare_at_price" value="{{ block.settings.bundleitem.price | money }}" />
+                                <input type="hidden" name="item_discounted_price" value="{{ discount_price | money }}" />
+                                <span class="compare-at-price">{{ block.settings.bundleitem.price | money }}</span>
+                                <span class="regular-price">{{ discount_price | money }}</span>
+                            </span>                                
+                                <select name="item_variant_options" class="{% if block.settings.bundleitem.variants.size > 1 %}active{% endif %}">
+                                {% for variant in block.settings.bundleitem.variants %}
+                                    {% liquid 
+                                        assign discount_percentage = section.settings.discount_percentage | times: 0.01
+                                        assign variant_price = variant.price
+                                        assign discount_amount = variant_price | times: discount_percentage
+                                        assign discount_price = variant_price | minus: discount_amount
+                                    %}
+                                    <option value="{{ variant.id }}" data-variant-price="{{ variant_price | money }}" data-variant-discounted-price="{{ discount_price | money }}" data-variant-title="{{ variant.title }}" {% if forloop.first %}selected{% endif %} data-variant-available="{{ variant.available }}">{{ variant.title }}</option>
+                                {% endfor %}
+                                </select>
+                            <button type="{% if block.settings.bundleitem.selected_or_first_available_variant.available %}submit{% else %}button{% endif %}">
+                                {% if block.settings.bundleitem.selected_or_first_available_variant.available %}
+                                    <span class="title">Add</span>
+                                    <svg class="check-mark" xmlns="http://www.w3.org/2000/svg" viewBox="-5 -2 40 40" width="28" height="28"><path fill="none" d="M4.1 18.2 l7.1 7.2 l16.7-16.8"></path></svg>
+                                {% else %}
+                                    <span class="title">Out of stock</span>
+                                {% endif %}
+                            </button>
+                        </form>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <footer class="footer-container">           
+            <span class="bundle-item" data-footer-bundle-title>Your bundle:</span>
+            <div class="cart-bundle-items" data-cart-bundle-items>
+                
+            </div>
+            <div class="footer-header">
+                <span class="title active" data-footer-text>{{ section.settings.footertext }}</span>
+            </div>
+            <div class="footer-call-to-action" data-footer-call-to-action>
+                <div class="total-details">
+                    <span class="total">Total: </span>
+                    <span class="compare-at-price" data-total-compare-at-price>$120.00</span>
+                    <span class="discounted-price" data-total-discount-price>$100.00</span>
+                </div>
+                <button type="button" data-add-to-cart>
+                   <span class="text">Add to cart</span>
+                   <span class="loading-circle"></span>
+                </button>
+                <span class="discount-title">Discounts will be applied at checkout.</span>
+            </div>
+        </footer>
+</section>
+<template id="cart-bundle-item">
+    <div class="bundle-item">
+        <button type="button" class="close" data-variant-id data-variant-qty="1">
+            {% render "icon-close" %}
+        </button>
+        <a href="#" data-item-url title="Product Title">
+            <img src="" width="240" height="240" alt="Product Title" loading="eager" data-item-image>
+        </a>
+        <span class="item-details">
+            <span class="item-quantity" data-item-variant-id>1</span>
+            <span class="times">X</span>
+            <span class="title" data-item-title>Product Title</span>
+        </span>
+    </a>
+</template>
+{% schema %}
+  {
+    "name": "Main Bundle",
+    "settings": [
+        {
+            "type" : "header",
+            "content": "Heading Settings"
+        },
+        {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "BUY ANY 4 AND SAVE 10%"
+        },
+        {
+            "type": "text",
+            "id": "subheading",
+            "label": "Sub Heading",
+            "default": "Buy ANY 4 of these products and receive a 10% discount!"
+        },
+        {
+            "type": "header",
+            "content": "Footer Settings"
+        },
+        {
+            "type": "text",
+            "id": "footertext",
+            "label": "Footer Text",
+            "default": "Your bundle needs 4 more item(s)"
+        },
+        {
+            "type": "header",
+            "content": "Bundle & Discount Settings"
+        },
+        {
+            "type": "range",
+            "id": "discount_percentage",
+            "min": 1,
+            "max": 100,
+            "step": 1,
+            "label": "Discount Percentage",
+            "default": 10
+        },
+        {
+            "type": "range",
+            "id": "quantity_limit",
+            "min": 1,
+            "max": 100,
+            "step": 1,
+            "label": "Quantity Limit",
+            "default": 4
+        }
+    ],
+    "blocks": [
+        {
+            "type": "bundle",
+            "name": "Bundle",
+            "settings": [
+                {
+                    "type": "product",
+                    "id": "bundleitem",
+                    "label": "Bundle Item"
+                }
+            ]
+        }
+    ]
+  }
+{% endschema %}

@@ -1,8 +1,43 @@
 {
   "sections": {
     "main": {
-      "type": "bundle",
+      "type": "main-bundle",
+      "blocks": {
+        "3bd3a517-bfdf-4a7a-abde-39a7f0820f76": {
+          "type": "bundle",
+          "settings": {
+            "bundleitem": "the-3d-modeled-snowboard"
+          }
+        },
+        "d2eeafe0-5009-4949-88bf-bad9c06d0ee4": {
+          "type": "bundle",
+          "settings": {
+            "bundleitem": "the-3p-fulfilled-snowboard"
+          }
+        },
+        "66f46be0-12bc-40a4-accd-39a3724af6cd": {
+          "type": "bundle",
+          "settings": {
+            "bundleitem": "the-collection-snowboard-hydrogen"
+          }
+        },
+        "fc56f471-cc70-46f8-a0aa-8ce7bf9c34d1": {
+          "type": "bundle",
+          "settings": {
+            "bundleitem": "the-collection-snowboard-oxygen"
+          }
+        }
+      },
+      "block_order": [
+        "3bd3a517-bfdf-4a7a-abde-39a7f0820f76",
+        "d2eeafe0-5009-4949-88bf-bad9c06d0ee4",
+        "66f46be0-12bc-40a4-accd-39a3724af6cd",
+        "fc56f471-cc70-46f8-a0aa-8ce7bf9c34d1"
+      ],
       "settings": {
+        "heading": "BUY ANY 4 AND SAVE 10%",
+        "subheading": "Buy ANY 4 of these products and receive a 10% discount!",
+        "footertext": "Your bundle needs 4 more item(s)"
       }
     }
   },
